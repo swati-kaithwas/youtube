@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+</head>
+<style>
+    *{
+        margin-left:10px;
+    }
+    #videos {
+        display:grid;
+        grid-template-columns: 30% 60%;
+        grid-gap:2%;
+        margin-top: 5%;
+        margin-left: 20%;
+        
+    }
+    input {
+       
+       width: 120%;
+        height:30px;
+    }
+    img {
+        width:100px;
+        height: 60px;
+        margin-top: -10px;
+    }
+    .main_navbar{
+
+
+ height: 30px;
+ 
+  display : grid;
+  grid-template-columns: 5% 12% 20% 8% 8% 5% 5% 5% 5%;
+  grid-gap:3%; 
+  margin-top:15px;
+
+    }
+    button {
+        height: 36px;
+        width: 100%;
+        padding: auto;
+    }
+    
+.navbar_2 {
+    position:fixed;
+    top: 0;
+    left:0;
+    width: 200px;
+    height: 100%;
+    margin-top:5%;
+
+
+}
+.navbar__link1 {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+</style>
+
+<body>
+    <div class="main_navbar">
+        
+               <a href="#" class="navbar__link">
+               <span class="material-icons"> menu</span> </a>
+       
+                <img src="https://cdn.mos.cms.futurecdn.net/8gzcr6RpGStvZFA2qRt4v6.jpg" alt=""/>
+               <input type="text" id="query" placeholder="Search for a Video"/>
+                <button onclick ="searchVideos()"><a href="#" class="navbar__link"><span class="material-icons">search</span></button></a>
+              
+                    <a href="#" class="navbar__link">
+                    <span class="material-icons"> mic</span></a>
+                
+
+               
+                        <a href="#" class="navbar__link">
+                      <span class="material-icons">photo_camera_front </span>  </a>
+                
+                    <a href="#" class="navbar__link">
+                        <span class="material-icons"> apps </span> </a>
+               
+                    <a href="#" class="navbar__link">
+                        <span class="material-icons">notifications_none </span> </a>
+               
+
+
+                        <a href="#" class="navbar__link"><span class="material-icons">account_circle</span></a>
+                           
+    </div>
+    <div class="navbar_2">
+        <a href="#" class="navbar__link1">
+            <span class="material-icons"> home</span>Home</a>
+
+            <a href="#" class="navbar__link1">
+                <span class="material-icons"> explore </span>Explore</a> 
+
+                <a href="#" class="navbar__link1">
+                <span class="material-icons">subscriptions</span>Subscriptions</a>
+
+                <hr/>
+                <a href="#" class="navbar__link1">
+                    <span class="material-icons"> video_library</span>Video Library</a>
+                   
+                    <a href="#" class="navbar__link1">
+                    <span class="material-icons">history</span>History</a>
+
+
+                    <a href="#" class="navbar__link1">
+                    <span class="material-icons">watch_later</span>Watch Later</a>
+
+                    <a href="#" class="navbar__link1">
+                    <span class="material-icons">thumb_up</span>Liked Videos</a>
+    </div>
+ 
+    <div id="videos"></div>
+
+</body>
+</html>
+<script>
+//https://youtube.googleapis.com/youtube/v3/search?q=csk&key=[YOUR_API_KEY]
+//https://youtube.googleapis.com/youtube/v3/search?q=csk&type=video&key=[YOUR_API_KEY]
+
+
+
+async function searchVideos() {
+
+    let query=document.getElementById("query").value;
+    let res =await fetch(`https://youtube.googleapis.com/youtube/v3/search?q=${query}&key=AIzaSyCC1Oxugm_JKZ7F71zQwfunGDpYVytiEF0&part=snippet&maxResults=20`);
+    
+    let data =await res.json();
+    console.log("data:",data);
+    
+    appendVideos(data.items);
+}
+//searchVideos()
+let videos=document.getElementById("videos")
+function appendVideos(video_data) {
+    videos.innerHTML= null;
+    video_data.forEach(({id:{videoId},snippet:{channelId,channelTitle,description,liveBroadcastContent,publishTime,publishedAt}}) => {
+   
+   let div=document.createElement("div");
+
+   div.innerHTML=`<iframe width="300" height="220" src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      
+   let xyz=document.createElement("div");
+   
+   let video_data_chanelid=document.createElement("p");
+      video_data_chanelid.textContent= channelId;
+
+
+     let video_data_chanelt=document.createElement("p");
+      video_data_chanelt.textContent=channelTitle;
+
+      let video_data_des=document.createElement("p");
+     video_data_des.textContent =description;
+
+
+     let video_data_livebroad=document.createElement("p");
+     video_data_livebroad.textContent =liveBroadcastContent;
+
+     let video_data_publish=document.createElement("p");
+     video_data_publish.textContent =publishTime;
+
+
+     
+     let video_data_publishdat=document.createElement("p");
+     video_data_publishdat.textContent =publishedAt;
+
+
+  div.style.marginTop="20px";
+
+ xyz.append(video_data_chanelid,video_data_chanelt,video_data_des,video_data_livebroad,video_data_publish,video_data_publishdat);
+ 
+    videos.append(div,xyz);
+});
+
+}
+
+</script>
