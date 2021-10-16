@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    rel="stylesheet">
+</head>
+<style>
+
+
+
+#videos,#videos_most {
+    display:grid;
+    grid-template-columns: repeat(4,20%);
+    grid-gap:5%;
+    margin-top: 5%;
+    /* margin-left:30%; */
+}
+
+input {
+       
+       width: 120%;
+        height:30px;
+    }
+    img {
+        width:100px;
+        height: 60px;
+        margin-top: -10px;
+    }
+    .main_navbar{
+
+
+    height: 30px;
+ 
+  display : grid;
+  grid-template-columns: 5% 12% 20% 8% 8% 5% 5% 5% 5%;
+  grid-gap:3%; 
+  margin-top:15px;
+
+    }
+    button {
+        height: 36px;
+        width: 100%;
+        padding: auto;
+    }
+    
+
+</style>
+
+<body>
+
+    <div class="main_navbar">
+        
+        <a href="#" class="navbar__link">
+        <span class="material-icons"> menu</span> </a>
+
+         <img src="https://cdn.mos.cms.futurecdn.net/8gzcr6RpGStvZFA2qRt4v6.jpg" alt=""/>
+        <input type="text" id="query" placeholder="Search for a Video"/>
+         <button onclick ="searchVideos()"><a href="#" class="navbar__link"><span class="material-icons">search</span></button></a>
+       
+             <a href="#" class="navbar__link">
+             <span class="material-icons"> mic</span></a>
+             
+        
+             <a href="#" class="navbar__link">
+                 <span class="material-icons">photo_camera_front </span>  </a>
+           
+               <a href="#" class="navbar__link">
+                   <span class="material-icons"> apps </span> </a>
+        
+             <a href="#" class="navbar__link">
+                 <span class="material-icons">notifications_none </span> </a>
+        
+
+
+                 <a href="#" class="navbar__link"><span class="material-icons">account_circle</span></a>
+                    
+
+</div>
+
+
+
+<div id="videos"></div>
+<div id="videos_most"></div>
+</body>
+</html>
+<script>
+//https://youtube.googleapis.com/youtube/v3/search?q=csk&key=[YOUR_API_KEY]
+//https://youtube.googleapis.com/youtube/v3/search?q=csk&type=video&key=[YOUR_API_KEY]
+
+
+//let videos=document.getElementById("query").value;
+
+async function searchVideos() {
+// let videos=document.getElementById("query").value;
+let query=document.getElementById("query").value;
+let res =await fetch(`https://youtube.googleapis.com/youtube/v3/search?q=${query}&key=AIzaSyCC1Oxugm_JKZ7F71zQwfunGDpYVytiEF0&maxResults=20`);
+
+let data =await res.json();
+console.log("data:",data);
+
+appendVideos(data.items);
+}
+//searchVideos()
+let videos=document.getElementById("videos")
+function appendVideos(video_data) {
+videos.innerHTML= null;
+video_data.forEach(({id:{videoId}}) => {
+//console.log("video:",videoId);
+
+
+let div=document.createElement("div");
+
+div.innerHTML=`<iframe width="300" height="215" src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+
+div.style.marginTop="20px";
+videos.append(div);
+});
+}
+
+
+
+
+
+// popular videos
+async function popularVideos(){
+
+let res=await fetch(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=IN&key=AIzaSyAdtkGe7pygoam4nKYQqZ-iJtAXHGVh5zQ&maxResults=20`);
+
+let data = await res.json();
+
+console.log("data:",data);
+
+appendMostVideos(data.items)
+
+}
+
+let videos_most=document.getElementById("videos_most");
+
+function appendMostVideos(video_data){
+
+videos.innerHTML=null;
+videos_most.innerHTML=null;
+video_data.forEach(({id:{videoId},snippet:{title,channelTitle}} )=> {
+
+    let x1=document.createElement("div");
+    let div=document.createElement("div");
+    let div_k=document.createElement("h2");
+   
+    let div_a=document.createElement("p");
+   
+    div_k.textContent=title;
+    div_a.textContent=channelTitle;
+      div_a.style.color="blue";
+    div.innerHTML = `<iframe width="300" height="200" src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    x1.append(div,div_k,div_a);
+    videos_most.append(x1);
+});
+
+}
+popularVideos();
+</script>
